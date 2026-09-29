@@ -3,85 +3,74 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Jogo da Cobrinha</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
+body {
+    margin: 0;
+    background: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
 
-    body {
-        margin: 0;
-        background: #111;
-        color: white;
-        font-family: Arial, sans-serif;
-        text-align: center;
-        overflow: hidden;
-    }
+h1 {
+    margin: 15px 0 5px;
+}
 
-    h1 {
-        margin: 15px 0 5px;
-        font-size: 28px;
-    }
+#pontos {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
 
-    #score {
-        font-size: 20px;
-        margin-bottom: 10px;
-    }
+canvas {
+    background: #222;
+    border: 3px solid white;
+    width: 320px;
+    height: 320px;
+    max-width: 90vw;
+}
 
-    canvas {
-        background: #222;
-        border: 3px solid #fff;
-        max-width: 95vw;
-        max-height: 60vh;
-    }
+.controles {
+    margin: 15px auto;
+    display: grid;
+    grid-template-columns: 70px 70px 70px;
+    width: 210px;
+    gap: 5px;
+}
 
-    .controls {
-        margin-top: 15px;
-        display: grid;
-        grid-template-columns: 70px 70px 70px;
-        grid-template-rows: 60px 60px;
-        justify-content: center;
-        gap: 5px;
-    }
+button {
+    height: 60px;
+    font-size: 28px;
+    border: 0;
+    border-radius: 10px;
+    background: #333;
+    color: white;
+}
 
-    button {
-        font-size: 28px;
-        border: none;
-        border-radius: 12px;
-        background: #333;
-        color: white;
-    }
+.cima {
+    grid-column: 2;
+}
 
-    button:active {
-        background: #555;
-    }
+.esquerda {
+    grid-column: 1;
+}
 
-    #up {
-        grid-column: 2;
-    }
+.baixo {
+    grid-column: 2;
+}
 
-    #left {
-        grid-column: 1;
-        grid-row: 2;
-    }
+.direita {
+    grid-column: 3;
+}
 
-    #down {
-        grid-column: 2;
-        grid-row: 2;
-    }
-
-    #right {
-        grid-column: 3;
-        grid-row: 2;
-    }
-
-    #restart {
-        margin-top: 15px;
-        padding: 10px 20px;
-        font-size: 18px;
-        background: #008000;
-    }
+#reiniciar {
+    width: 210px;
+    height: 50px;
+    font-size: 20px;
+    background: green;
+}
 </style>
 </head>
 
@@ -89,41 +78,98 @@
 
 <h1>🐍 Jogo da Cobrinha</h1>
 
-<div id="score">Pontos: 0</div>
+<div id="pontos">Pontos: 0</div>
 
-<canvas id="game" width="320" height="320"></canvas>
+<canvas id="tela" width="320" height="320"></canvas>
 
-<div class="controls">
-    <button id="up">⬆️</button>
-    <button id="left">⬅️</button>
-    <button id="down">⬇️</button>
-    <button id="right">➡️</button>
+<div class="controles">
+
+<button class="cima" onclick="mover('cima')">⬆️</button>
+
+<button class="esquerda" onclick="mover('esquerda')">⬅️</button>
+
+<button class="baixo" onclick="mover('baixo')">⬇️</button>
+
+<button class="direita" onclick="mover('direita')">➡️</button>
+
 </div>
 
-<button id="restart">🔄 Reiniciar</button>
+<button id="reiniciar" onclick="iniciar()">🔄 Reiniciar</button>
 
 <script>
 
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+var tela = document.getElementById("tela");
+var desenho = tela.getContext("2d");
 
-const tamanho = 20;
-const quantidade = canvas.width / tamanho;
+var tamanho = 20;
 
-let cobra;
-let comida;
-let direcao;
-let proximaDirecao;
-let pontos;
-let jogo;
+var cobra;
+var comida;
+var direcao;
+var pontos;
+var intervalo;
 
 function iniciar() {
 
     cobra = [
-        {x: 8, y: 8},
-        {x: 7, y: 8},
-        {x: 6, y: 8}
+        {x: 160, y: 160},
+        {x: 140, y: 160},
+        {x: 120, y: 160}
     ];
 
+    comida = {
+        x: 200,
+        y: 200
+    };
+
     direcao = "direita";
-    proxima
+    pontos = 0;
+
+    document.getElementById("pontos").innerHTML =
+        "Pontos: 0";
+
+    clearInterval(intervalo);
+
+    intervalo = setInterval(jogar, 150);
+
+    desenhar();
+}
+
+function desenhar() {
+
+    desenho.fillStyle = "#222";
+    desenho.fillRect(0, 0, 320, 320);
+
+    desenho.fillStyle = "red";
+    desenho.fillRect(
+        comida.x,
+        comida.y,
+        tamanho - 2,
+        tamanho - 2
+    );
+
+    for (var i = 0; i < cobra.length; i++) {
+
+        if (i == 0) {
+            desenho.fillStyle = "#00ff00";
+        } else {
+            desenho.fillStyle = "#00aa00";
+        }
+
+        desenho.fillRect(
+            cobra[i].x,
+            cobra[i].y,
+            tamanho - 2,
+            tamanho - 2
+        );
+    }
+}
+
+function jogar() {
+
+    var cabeca = {
+        x: cobra[0].x,
+        y: cobra[0].y
+    };
+
+    if (direcao == "direita")
