@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jogo da Cobrinha</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background: #111;
+        color: white;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    h1 {
+        margin: 15px 0 5px;
+        font-size: 28px;
+    }
+
+    #score {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    canvas {
+        background: #222;
+        border: 3px solid #fff;
+        max-width: 95vw;
+        max-height: 60vh;
+    }
+
+    .controls {
+        margin-top: 15px;
+        display: grid;
+        grid-template-columns: 70px 70px 70px;
+        grid-template-rows: 60px 60px;
+        justify-content: center;
+        gap: 5px;
+    }
+
+    button {
+        font-size: 28px;
+        border: none;
+        border-radius: 12px;
+        background: #333;
+        color: white;
+    }
+
+    button:active {
+        background: #555;
+    }
+
+    #up {
+        grid-column: 2;
+    }
+
+    #left {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    #down {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    #right {
+        grid-column: 3;
+        grid-row: 2;
+    }
+
+    #restart {
+        margin-top: 15px;
+        padding: 10px 20px;
+        font-size: 18px;
+        background: #008000;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>🐍 Jogo da Cobrinha</h1>
+
+<div id="score">Pontos: 0</div>
+
+<canvas id="game" width="320" height="320"></canvas>
+
+<div class="controls">
+    <button id="up">⬆️</button>
+    <button id="left">⬅️</button>
+    <button id="down">⬇️</button>
+    <button id="right">➡️</button>
+</div>
+
+<button id="restart">🔄 Reiniciar</button>
+
+<script>
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const tamanho = 20;
+const quantidade = canvas.width / tamanho;
+
+let cobra;
+let comida;
+let direcao;
+let proximaDirecao;
+let pontos;
+let jogo;
+
+function iniciar() {
+
+    cobra = [
+        {x: 8, y: 8},
+        {x: 7, y: 8},
+        {x: 6, y: 8}
+    ];
+
+    direcao = "direita";
+    proxima
